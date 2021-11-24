@@ -1,0 +1,411 @@
+{% extends 'url-shortner.html' %}
+{% load static %}
+{% block title %}30 Bits | URL Shortner{% endblock title %}
+{% block style %}
+@media(min-width: 800px){
+    .mobile-button{
+      display: none;
+    }
+    .web-button{
+      display: block;
+    }
+    .main_box{
+    padding: 1rem 1rem 0rem 1rem;
+    }
+  }
+  
+  @media(max-width: 780px){
+    
+    .web-button{
+      display: none;
+    }
+    .main_box{
+    padding: 1rem;
+    }
+  }
+  .modal-backdrop{
+    display : none;
+  }
+  .modal-background{
+    background:linear-gradient(rgba(255, 255, 255, 0.945), rgb(255, 255, 255)), url('static/signup/background.jpg');
+    background-position: center;
+    background-size: 20pc;
+  }
+  a{
+    text-decoration:none;
+  }
+  .main_box{
+    border-radius : 3px;
+  }
+  {% endblock style %}
+{% block form_area %}
+
+<h1 class="pt-3 pb-2"  style="font-family: 'Jura';font-weight: 600;">Bits Compressor  </h1>
+     <form method="post" name = 'url-shortner' action="/" class="main_box border">
+            
+        <div class="input-group mb-3">
+            {% csrf_token %}
+            {% for field in form %}
+              {{field}}
+              {{field.errors}}
+              {{field.help_text}}           
+            {% endfor %}  
+         
+          <button type="submit" class="btn btn-outline-dark web-button" style="margin-right: 1rem;">URL Shortner</button>
+           
+          <button type="button" data-bs-toggle="modal" data-bs-target="#image_input" data-backdrop="false" class="btn btn-outline-dark web-button" ><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+  <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+  <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z"/>
+</svg> Convert Image to Link</button>
+        </div>  
+        <button class="btn btn-outline-dark mobile-button " type="submit">URL Shortner</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#image_input" data-backdrop="false" class="btn btn-outline-dark mobile-button" ><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+  <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+  <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z"/>
+</svg> Link for Image</button>
+          </form>
+         
+                {% if messages %}
+      {% for message in messages %}
+      <a data-bs-dismiss="alert" data-bs-target="#my-alert">
+    <div id="my-alert" class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-warning {% endif %}  d-flex mt-3" role="alert">
+       <div>
+           {{message}}
+      </div>
+    </div>
+    </a>
+   {% endfor %}
+   {% endif %}
+             {% if shortened_url %}
+            <div class="row pt-3">
+            <p><code >{{input_data}}</code></p>
+  <label for="colFormLabelLg" class="col-sm-3 col-form-label col-form-label-lg">Your Shortened Link</label>
+  <div class="col-sm-5">
+      <a href="{% url 'redirect' shortened_url %}" style="text-decoration: none;">
+    <input disabled class="form-control form-control-lg web-button" value="https://{{sitedomain}}/{{shortened_url}}" id="shortlink" style="background-color: white;cursor: pointer;border-color: blue;">
+    <input disabled class="form-control form-control-lg mobile-button mb-3" value="https://{{sitedomain}}/{{shortened_url}}" id="shortlink" style="background-color: white;cursor: pointer;border-color: blue;">
+   
+   </a>
+  </div>
+  <div class="col-sm-4 btn-group"  role="group">
+  <button class="btn btn-outline-success btn-lg"  onclick="myFunction()">Copy to Clipboard  </button>
+   <button class="btn btn-outline-success btn-lg pt-1 " data-bs-toggle="modal" data-bs-target="#qrcode_modal">
+   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-upc-scan" viewBox="0 0 16 16">
+  <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5zM3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-7zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7z"/>
+</svg>
+</button>
+   </div>
+<div class="form-text">
+  {% if not user.is_authenticated %}
+  *We have securely saved your shortened link to our database.
+   This link will never expire, copy it now we will not show it again. 
+   
+       {% elif link_used %}
+       *This link is earlier saved with the above shortened url. You can registered the provided link by editing its alias.
+{% else %} 
+*We have securely
+   saved your shortened link in our database, which is active by default unless you make changes.
+     {% endif %}
+</div>
+    <p class="fs-6 col-md-8 pt-4 pb-3">
+   Hey {{user.first_name}}, do you want <i> Branded link</i> i.e. {{sitedomain}}<span style="color:green">/your-title
+   </span> instead of {{sitedomain}}/ <span style = "color:red;"> {{shortened_url}}</span>, 
+   
+   you can do this {% if not user.is_authenticated %} and many more too, freely just by Signup.
+   {% else %}
+   by pressing Alias Editor button.
+    {% endif %}
+    </p>
+
+</div>
+{% endif %}
+
+    {% if not shortened_url %}
+    <p class="fs-6 col-md-8 pt-4 pb-3">
+    {% if user.is_authenticated %}
+    Your created links are our responsibility but in case if you are having any old or dead links,
+    then kindly delete all those by using Editor Tool. Utility buttons are given below.
+    {% else %}
+Quickly and easily get started with 30 Bits, a url shortner - web application, built for handling your complex links according to your preference.
+ To unlock all the benefits you need to signup which help   us to serve you in a better way.
+    {% endif %}
+    </p>
+{% endif %}
+      <div class="mb-4">
+      <span>
+      {% if user.is_authenticated %}
+      {% if shortened_url %}
+    <a href="{% url 'url-details' shortened_url  %}" class="btn btn-outline-primary btn-lg px-4 mb-3">
+    Alias Editor Tool </a>
+    {% elif canvas %}
+    <a href="{% url 'shortner' %}" class="btn btn-outline-primary btn-lg px-4 mb-3">
+    Back to Search </a>
+    {% endif %}
+      {% endif %}
+      
+      {% if not user.is_authenticated %}
+    <a href="{% url 'signup-page' %}" class="btn btn-outline-primary btn-lg px-4 mb-3">Join us for Free </a>
+      {% endif %}
+      </span>
+      <span>
+      {% if user.is_authenticated %}
+      <button type="button" class="btn btn-outline-success btn-lg px-4 mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal" data-backdrop="false">
+  You've Created {{user_link_count}} Links
+</button>
+      {% else %}
+        <a href="{% url 'user-login-page' %}" class="btn btn-outline-success btn-lg px-4 mb-3"> Login  </a>
+      {% endif %}
+      </span>
+        </div>
+    
+    <hr class="col-12 mb-5 mt-4">
+
+    <div class="row g-5">
+      <div class="col-md-6">
+      <h2>Benefits of {% if user.is_authenticated %} 30 Bits {% else %} Joining {% endif %}</h2>
+        <p>We are ready with a bunch of benefits that provide ease to our users to handle their complex links in 
+        the way they want.</p> 
+        <ul class="icon-list">
+          <li>100% Free + Unlimited Links Storage.</li>
+          <li>Edit, Delete and Modify all your links whenever you want.</li>
+          <li>Name your links, the way you want instead of having random values. Like 3058.in/your-alias </li>
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h2>Your Latest Links</h2>
+        <p>Here is the list of links generated by you so far. Just click upon the each link to explore more features.   </p>
+        {% if user.is_authenticated %}
+          {% if created_links|length_is:"0" %}
+          <div class="alert alert-success pb-0 " role="alert">
+          <h4 class="alert-heading">Nothing Found</h4>
+           <p>You don't have ctreated any links, create as link as you want to populate this area. </p>
+          </div>
+          {% else %}
+          <ul class="icon-list">
+            {% for link in created_links|slice:":4" %}
+            <li><a {% if not link.is_active %} class='text-muted' {% endif %} href="{% url 'url-details' link.shortened_url %}">{{sitedomain}}/{{link.shortened_url}}</a> </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        
+          {% else %}
+        <a href="{% url 'user-login-page' %}">
+        <div class="alert alert-success pb-0" role="alert">
+          <p> Unlock this benefit at zero cost, which provide you access to Update, Delete and Modify your generated link whenever you want.</p>
+        </div>
+        </a>
+          {% endif %}
+
+
+      </div>
+    </div>
+  
+{% endblock form_area %}
+{% block js_script %}
+    <script type="text/javascript">
+    function myFunction() {
+          var copyText = document.getElementById("shortlink");
+          copyText.select();
+          copyText.setSelectionRange(0, 99999); /* For mobile devices */
+          navigator.clipboard.writeText(copyText.value);
+          
+        }
+        </script>
+    {% endblock js_script %}
+
+    {% comment %} OFf Canvas Link Editor {% endcomment %}
+    {% block offcanvas %}    
+    {% if canvas %}
+<div class="offcanvas offcanvas-end show "  data-bs-backdrop="false">
+  <div class="offcanvas-header pt-4">
+    <h5 id="offcanvasRightLabel">..../{{slug_data.shortened_url}} | Alias Editor</h5>
+    
+    <a type="button" class="btn-close text-reset" href="/"></a>
+  
+  </div>
+  <div class="offcanvas-body">
+<form class="form-floating" method="POST">
+  {% csrf_token %}
+  {% for message in messages %}
+  <a data-bs-dismiss="alert" data-bs-target="#canvas-alert">
+  <div id="canvas-alert" class="alert alert-danger d-flex" role="alert">
+       <div>
+          {{message}}
+      </div>
+  </div>
+  </a>
+  {% endfor %}
+    <div class="mb-3">
+      <label for="formGroupExampleInput" class="form-label">Original URL</label>
+    <div class="alert alert-warning d-flex" role="alert" style="word-break: break-all">
+          <div>
+              {{slug_data.redirect_path}}
+          </div>
+    </div>
+
+    <div class="mb-3">
+    <label for="basic-url" class="form-label mb-0 ">Shortned URL</label>
+    <div class="form-text pb-1">
+    Length should be less than 20 Characters.
+    </div>
+    <div class="input-group mb-3">
+    <a href="{{protocol_type}}://{{sitedomain}}/{{slug_data}}" target = "_blank">
+      <span title="Click to Visit" class="input-group-text" id="basic-addon3">{{protocol_type}}://{{sitedomain}}/</span>
+      </a>
+      {% for field in slug_input %}
+        {{field}}
+        {{field.errors}}
+      {% endfor %}
+      <div class="form-text">
+      Input can contain letters (a-z), numbers (0-9), and underscores or hyphens.
+    </div>
+    </div>
+    </div>
+    
+    {% comment %} <div class="form-text mt-3">
+      Current Status : {% if slug_data.is_active %} <span class="badge pill bg-success px-2 fw-100" style="font-family : 'Arial'; ">Active {% else %} <span class="badge pill bg-danger px-2 fw-100" style="font-family : 'Arial'; ">Unactive {% endif %}</span>
+    </div> {% endcomment %}
+
+    <div class="d-grid gap-2 mt-4">
+      <button class="btn btn-outline-success py-2"  name="update-button" type="submit">Update the Changes</button>
+      {% if is_registered %}
+      
+      <button class="btn {% if slug_data.is_active %} btn-outline-warning  {% else %} btn-warning  {% endif %}py-2 mt-2"   name="active_unactive-button" type="submit">
+      {% if slug_data.is_active %}
+      Make this Unactivate {% else %} Activate this link  {% endif %}
+       </button>
+      <div class="col-md-12">
+      <div class="login-or">
+          <hr class="hr-or">
+          <span class="span-or">or</span>
+      </div>
+      
+    </div>
+    <a type="button" href="{% static 'url-shortner/30Bits_qrcode.png' %}" download class="btn btn-outline-primary py-2" name="delete-button" >Share using QR Code</a>
+    <button class="btn btn-outline-danger py-2 mt-2" name="delete-button" type="submit">Delete Permanently</button>
+    {% endif %}
+    </div>
+    
+</form>
+  </div>
+  <div class="container">
+  <footer>
+    <ul class="nav justify-content-center border-bottom pb-2 mb-3">
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Support</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Terms of Services</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Privacy Policy</a></li>
+      
+    </ul>
+    <p class="text-center text-muted">Made with ❤️ by <span class="mandc">Dev</span></p>
+  </footer>
+</div>
+
+</div>
+{% endif %}
+{% endblock offcanvas %}
+
+{% block modal %}
+{% comment %} Created Links {% endcomment %}
+<div class="modal fade modal-background" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" model-backdrop="false">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Your Shortened Urls</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white">
+    <div class="list-group list-group-flush border-bottom scrollarea">
+    {% if created_links|length_is:"0" %}
+          <div class="card border-0">
+          <img class="no-item" src = "{% static 'url-shortner/no-item.png' %}" >
+          </div>
+          <span class="text-muted text-center p-3"> You don't have created any Link.</span>
+          {% else %}
+      {% for link in created_links %}
+      <a href="{% url 'url-details' link.shortened_url %}" class="list-group-item list-group-item-action py-3 lh-tight {% if not link.is_active %} bg-light text-muted {% endif %} " aria-current="true">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+          <strong class="mb-1">https://{{sitedomain}}/{{link.shortened_url}}</strong>
+          <small>
+          {% if link.is_active %}
+          Active
+           {% else %}
+           Unactive 
+          {% endif %}
+          </small> 
+        </div>
+        <div class="mb-1 small"  style="word-break: break-all;">
+          {{link.redirect_path}}
+        </div>
+        <p class="card-text"><small class="text-muted">Last Updated {{link.last_modified|timesince}} ago</small></p>
+      </a>
+      {% endfor %}
+    {% endif %}
+         </div>
+  </div>
+
+      </div>
+     <footer>
+    <p class="text-center text-muted mt-3 small">Terms of Services | Support | Made with ❤️ by <span class="mandc">Dev</span></p>
+      </footer>
+    </div>
+  </div>
+</div>
+{% comment %} Created Links {% endcomment %}
+
+{% comment %} QRCode {% endcomment %}
+<div class="modal fade modal-background" id="qrcode_modal" tabindex="-1" aria-labelledby="qrcodemodal_Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Shortened Link QR Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body mx-auto">
+        <img src={% static 'url-shortner/30Bits_qrcode.png' %}>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a type="button" href={% static 'url-shortner/30Bits_qrcode.png' %} download class="btn btn-primary">Downlaod QRCode</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade modal-background" id="image_input" tabindex="-1" aria-labelledby="image_input_Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      
+    <div class="modal-content">
+    <form method="post" action="/image_submission"  enctype="multipart/form-data">
+    
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Image Input</h5>
+      </div>
+        <div class="modal-body mx-auto">
+        <img style="width: 100%;" src = "{% static 'url-shortner/drag-drop-image.jpg' %}" >
+      
+        <div class="input-group mt-3">
+            {% csrf_token %}
+            {% for field in form2 %}
+              {{field}}
+              {{field.errors}}
+            {% endfor %}
+          </div>
+          <div class="form-text pt-2 small">
+          Image size Supported upto 3.058 Mb 😃
+    </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-secondary">Submit</button>
+      </div>
+</form>
+    </div>
+    
+  </div>
+</div>
+
+
+{% comment %} QRCode {% endcomment %}
+{% endblock modal %}

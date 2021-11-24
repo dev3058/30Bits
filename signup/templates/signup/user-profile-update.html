@@ -1,0 +1,62 @@
+{% extends 'signup-base.html' %}
+{% load static %}
+{% block head_content %}
+<link rel = "stylesheet" href = "{% static 'signup/signup.css' %}">
+{% endblock head_content %}
+{% block title %}{{ user.username }} Profile Update{% endblock title %}
+{% block main_title %} Update My Profile {% endblock main_title %}           
+     {% block form_area %} 
+     {% if messages %}
+      {% for message in messages %}
+      <a data-bs-dismiss="alert" data-bs-target="#profile-alert">
+    <div id='profile-alert' class="alert alert-warning d-flex" role="alert">
+       <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+      <div>
+          {{message}}
+      </div>
+   </div>
+   </a>
+   {% endfor %}
+   {% endif %}     
+               {% if user.first_name %}
+            <div class="form-group">
+            <input disabled value="First Name : {{user.first_name}}"  class="form-control my-input">
+            <input disabled value="Last Name : {{user.last_name}}"  class="form-control my-input">
+            <input disabled value="Email Address : {{user.email}}"  class="form-control my-input">
+            </div>
+            {% else %}
+            <input disabled value="Email Address : {{user.email}}"  class="form-control my-input">
+            {% endif %}
+               <form method="post" name="signup">
+               {% csrf_token %}
+                    {% for field in form %}
+                  <div class="form-group {% if field.errors or error %}error{% endif %}">
+                        {{field}}
+                        {{field.errors}}
+                  </div>
+                  {% endfor %}
+                  <div class="mb-3 text-muted small">
+                     If you alter your Email Address you need to verify your account again.
+                  </div>
+                  <div class="text-center pt-1">
+                     <button type="submit" class=" btn btn-block send-button tx-tfm">
+                     {% if user.first_name %}
+                     Update My Profile
+                     {% else %}
+                      Create My New Profile
+                      {% endif %}
+                     </button>
+                  </div>
+                  <div class="col-md-12 ">
+                     <div class="login-or">
+                        <hr class="hr-or">
+                        <span class="span-or"></span>
+                     </div>
+                  </div>
+               <p class="small text-center bottom-text">
+                  <a href="{% url 'shortner' %}">
+                  Everything Looks Good </a> | <a href="">Need Assistance</a></p>
+                  <p class="small mt-3">By filling up, you are indicating that you have read and agree to the <a href="#" class="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+                  </p>
+               </form>
+{% endblock form_area %}

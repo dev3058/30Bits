@@ -1,0 +1,15 @@
+{% autoescape off %}
+
+Hi {{user.username}}
+
+Thanks for Joining us. 
+
+Please click the following link to activate your account.
+
+http://{{site_domain}}{% url 'activate' uid64=uid token=token %}
+
+If you have not requested for the same, please inbox our developer team at dev3058@outlook.com
+
+Glad to see you,
+Team 30 Bits 
+{% endautoescape %}

@@ -1,0 +1,67 @@
+{% extends 'signup-base.html' %}
+{% load static %}
+{% block head_content %}
+<link rel = "stylesheet" href = "{% static 'signup/signup.css' %}">
+{% endblock head_content %}
+{% block title %}User Login Page{% endblock title %}
+{% block main_title %} Let's have Login {% endblock main_title %}           
+     {% block form_area %}     
+    {% if messages %}
+      {% for message in messages %}
+      <a data-bs-dismiss="alert" data-bs-target="#login-alert">
+    <div id="login-alert" class="alert alert-warning d-flex" role="alert">
+       <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+      <div>
+          {{message}}
+      </div>
+   </div>
+   </a>
+   {% endfor %}
+   {% endif %}
+    <form method="post" name="login">
+   {% csrf_token %}
+         {% for field in form %}
+      <div class="form-group {% if error %}error{% endif %}">
+            
+            {{field}}
+            {{field.errors}}
+         
+      </div>
+      {% endfor %}
+      {% if request.GET.next %}
+      <input type='hidden' name='next' value="{{ request.GET.next }}">
+      {% endif %}
+                  
+                  <div class="text-center pt-1">
+                     <button type="submit" class=" btn btn-block send-button tx-tfm">
+                     30 Bits Login
+                     </button>
+                     
+                  </div>
+                  <div class="col-md-12 ">
+                     <div class="login-or">
+                        <hr class="hr-or">
+                        <span class="span-or">or</span>
+                     </div>
+                  </div>
+                  <div class="text-center pt-1">
+                     <a class=" btn btn-block g-button tx-tfm" href="{% url "social:begin" "google-oauth2" %}">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 18 18">
+                        <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                        </svg>
+                      Login via Google</a>
+                  </div>
+                  
+                  <div class="col-md-12 ">
+                        <hr>
+                  </div>
+               <p class="small text-center bottom-text">
+                  <a href="{% url 'signup-page' %}">
+                  Don't have an Account </a> | <a href="{% url 'reset_password' %}"> Forget Password</a></p>
+
+                  <p class="small mt-3">By Login, you are indicating that you have read and agree to the <a href="#" class="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+                  </p>
+                  
+               </form>
+               {% endblock form_area %}
+            

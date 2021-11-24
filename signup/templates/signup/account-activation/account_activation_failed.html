@@ -1,0 +1,8 @@
+{% extends 'signup-base.html' %}
+{% load static %}
+{% block head_content %}
+<link rel = "stylesheet" href = "{% static 'signup/signup.css' %}">
+{% endblock head_content %}
+{% block title %}Link Expired{% endblock title %}
+{% block main_title %}Oops! Link Expired{% endblock main_title %}
+{% block form_area %}The page you are requested for had been expired by the provider.{% endblock form_area %}
