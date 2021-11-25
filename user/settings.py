@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rcky&&626-wg8#l0-o$lan(7=$okjfh*&5+r&a-j^o^^c_vqd6'
+SECRET_KEY = '////'
 
-RECAPTCHA_PUBLIC_KEY = '6Lc-qoccAAAAADe3wWnjYz7bJEo4QVCHMd5ZBQze'
-RECAPTCHA_PRIVATE_KEY = '6Lc-qoccAAAAAIUxm6jsgNx42si5sU7nL_jTFH0h'
+RECAPTCHA_PUBLIC_KEY = '///'
+RECAPTCHA_PRIVATE_KEY = '///'
 RECAPTCHA_DOMAIN = 'www.recaptcha.net'
-EMAIL_VERIFICATION_WHOISXML_API_KEY = 'at_9B7Cctl8ZJHJqt6o5w8clYv3Axubm'
+EMAIL_VERIFICATION_WHOISXML_API_KEY = '///'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -147,8 +147,8 @@ MEDIA_URL = "/image_files/"
 
 #SOCIAL LOGIN
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '748737807922-74iq06r2h9aoa1dr1ninahbvk6lse7gu.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '////'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '////'
 
 
 # Default primary key field type
@@ -163,12 +163,12 @@ LOGIN_REDIRECT_URL = '/'
 
 #SMTP CONFIGURATION'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
+EMAIL_HOST = '///'
+EMAIL_PORT = ///
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
-DEFAULT_FROM_EMAIL = 'mansion3058@gmail.com'
+EMAIL_HOST_USER = '///'
+EMAIL_HOST_PASSWORD = '///'
+DEFAULT_FROM_EMAIL = '///'
 
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
